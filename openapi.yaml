@@ -2787,6 +2787,9 @@ paths:
                                     max_upload_size:
                                         description: Maximum upload size in bytes
                                         type: integer
+                                    stripe_publishable_key:
+                                        description: Stripe publishable key (pk_...) for the environment's Stripe account. Public by design (the secret key is never exposed here). Absent when STRIPE_PUBLISHABLE_KEY is not configured on the server, so a client can tell "not configured" from "configured as empty".
+                                        type: string
                                     supports_preview_metadata:
                                         description: Whether the server supports preview metadata
                                         type: boolean
