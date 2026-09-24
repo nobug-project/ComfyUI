@@ -216,6 +216,16 @@ components:
                         - test
                         - sandbox
                     type: string
+                offer_subscription_id:
+                    description: |
+                        Stripe subscription a native Churnkey retention offer may apply to.
+                        Present only when the caller is in the native-offer rollout and owns
+                        a Personal workspace on an active paid monthly plan with no billing
+                        change in flight; absent otherwise, and the client then keeps offers
+                        disabled. Present in any mode. Not a signed authorization: the HMAC
+                        covers only the customer ID.
+                    minLength: 1
+                    type: string
             required:
                 - customer_id
                 - auth_hash
@@ -2767,6 +2777,9 @@ paths:
                             schema:
                                 additionalProperties: true
                                 properties:
+                                    billing_web_url:
+                                        description: Origin of the billing-web deployment paired with this Cloud environment (e.g. https://billing.comfy.org). Absent when BILLING_WEB_URL is not configured on the server, so a client can tell "not configured" from "configured as empty".
+                                        type: string
                                     free_tier_balance:
                                         description: Free-tier job allowance for an authenticated non-paid (FREE-tier) user in the rollout. Absent for paid users and unauthenticated requests. Synthesized from config before a grant row exists so a brand-new user still sees their full allowance.
                                         properties:
