@@ -11,6 +11,10 @@ components:
                     description: Display name of the asset. Mirrors name for backwards compatibility.
                     nullable: true
                     type: string
+                file_path:
+                    description: Relative path in global-namespace-root form (e.g. "models/checkpoints/flux.safetensors")
+                    nullable: true
+                    type: string
                 hash:
                     description: Blake3 hash of the asset content.
                     pattern: ^blake3:[a-f0-9]{64}$
@@ -148,6 +152,10 @@ components:
                     description: Display name of the asset. Mirrors name for backwards compatibility.
                     nullable: true
                     type: string
+                file_path:
+                    description: Relative path in global-namespace-root form (e.g. "models/checkpoints/flux.safetensors")
+                    nullable: true
+                    type: string
                 hash:
                     description: Blake3 hash of the asset content.
                     pattern: ^blake3:[a-f0-9]{64}$
@@ -207,6 +215,16 @@ components:
                         - live
                         - test
                         - sandbox
+                    type: string
+                offer_subscription_id:
+                    description: |
+                        Stripe subscription a native Churnkey retention offer may apply to.
+                        Present only when the caller is in the native-offer rollout and owns
+                        a Personal workspace on an active paid monthly plan with no billing
+                        change in flight; absent otherwise, and the client then keeps offers
+                        disabled. Present in any mode. Not a signed authorization: the HMAC
+                        covers only the customer ID.
+                    minLength: 1
                     type: string
             required:
                 - customer_id
@@ -1706,6 +1724,11 @@ paths:
                   name: name_contains
                   schema:
                     type: string
+                - description: JSON object for filtering by metadata fields
+                  in: query
+                  name: metadata_filter
+                  schema:
+                    type: string
                 - description: Maximum number of assets to return (1-500)
                   in: query
                   name: limit
@@ -2539,6 +2562,11 @@ paths:
                   name: name_contains
                   schema:
                     type: string
+                - description: JSON object for filtering by metadata fields
+                  in: query
+                  name: metadata_filter
+                  schema:
+                    type: string
                 - description: Maximum number of tags to return (1-1000, default 100)
                   in: query
                   name: limit
@@ -2749,6 +2777,9 @@ paths:
                             schema:
                                 additionalProperties: true
                                 properties:
+                                    billing_web_url:
+                                        description: Origin of the billing-web deployment paired with this Cloud environment (e.g. https://billing.comfy.org). Absent when BILLING_WEB_URL is not configured on the server, so a client can tell "not configured" from "configured as empty".
+                                        type: string
                                     free_tier_balance:
                                         description: Free-tier job allowance for an authenticated non-paid (FREE-tier) user in the rollout. Absent for paid users and unauthenticated requests. Synthesized from config before a grant row exists so a brand-new user still sees their full allowance.
                                         properties:
@@ -2769,6 +2800,9 @@ paths:
                                     max_upload_size:
                                         description: Maximum upload size in bytes
                                         type: integer
+                                    stripe_publishable_key:
+                                        description: Stripe publishable key (pk_...) for the environment's Stripe account. Public by design (the secret key is never exposed here). Absent when STRIPE_PUBLISHABLE_KEY is not configured on the server, so a client can tell "not configured" from "configured as empty".
+                                        type: string
                                     supports_preview_metadata:
                                         description: Whether the server supports preview metadata
                                         type: boolean
