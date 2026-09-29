@@ -2976,6 +2976,9 @@ paths:
                                     supports_preview_metadata:
                                         description: Whether the server supports preview metadata
                                         type: boolean
+                                    web_session_probe:
+                                        description: Global switch, the same for every caller and readable without credentials. When true, first-party sites send the credentialed /api/features read and take behaviour from its per-user unified_web_session. It grants nothing itself. Defaults to false.
+                                        type: boolean
                                 type: object
                     description: Success
                     headers:
